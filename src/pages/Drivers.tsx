@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
-import { Eye, FileCheck, FileX, Check, X, Bell, MessageSquare, Settings, BarChart2, Users, FileText, Edit, Trash2, AlertTriangle, Star, User, Download, Calendar, Search, Filter } from 'lucide-react';
-import Table, { TableColumn } from '../components/ui/Table';
+import {  FileCheck, FileX, Check, X, Bell, MessageSquare, Settings, BarChart2, Users, FileText, Edit, Trash2, AlertTriangle, Star, User, Download, Calendar, Search, Filter } from 'lucide-react';
+import  { TableColumn } from '../components/ui/Table';
 import { ViewAction, EditAction, DeleteAction, ApproveAction, RejectAction, SuspendAction } from '../components/ui/TableActions';
 import StatusBadge from '../components/ui/StatusBadge';
 import UserAvatar from '../components/ui/UserAvatar';
 import StarRating from '../components/ui/StarRating';
+import DriversApprovals from '../components/drivers/DriversApprovals';
+import DriversManagement from '../components/drivers/DriversManagement';
+import DriversControl from '../components/drivers/DriversControl';
+import DriversReports from '../components/drivers/DriversReports';
+import DriversNotifications from '../components/drivers/DriversNotifications';
+import DriversRatings from '../components/drivers/DriversRatings';
 
 interface Driver {
   id: number;
@@ -668,422 +674,6 @@ const Drivers: React.FC = () => {
     }
   ];
 
-  const renderApprovals = () => (
-    <div className="space-y-6">
-      <div className="mb-6">
-        <h2 className="text-xl font-bold mb-2">موافقات السائقين الجدد</h2>
-        <p className="text-gray-400">قائمة طلبات السائقين الجدد في انتظار المراجعة والموافقة</p>
-      </div>
-
-      <div className="flex gap-4 mb-6">
-        <input
-          type="text"
-          placeholder="البحث"
-          className="flex-1 bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white placeholder-gray-400"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <select
-          className="bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white"
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-        >
-          <option>حالة المستندات</option>
-          <option>الكل</option>
-          <option>مكتملة</option>
-          <option>غير مكتملة</option>
-        </select>
-        <select
-          className="bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white"
-          value={cityFilter}
-          onChange={(e) => setCityFilter(e.target.value)}
-        >
-          <option>المدينة</option>
-          <option>الكل</option>
-          <option>الرياض</option>
-          <option>جدة</option>
-          <option>الدمام</option>
-        </select>
-        <button className="bg-dark-200 text-white px-4 py-2 rounded-lg hover:bg-dark-100">
-          إعادة تعيين
-        </button>
-      </div>
-
-      <Table
-        columns={approvalsColumns}
-        data={driversData}
-        rowKey="id"
-      />
-    </div>
-  );
-
-  const renderDriverManagement = () => (
-    <div className="space-y-6">
-      {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        {stats.map((stat, index) => (
-          <div key={index} className={`${stat.color} rounded-xl p-6 text-white relative overflow-hidden`}>
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-white/20 rounded-full">
-                {stat.icon}
-              </div>
-              <div className="text-right">
-                <div className="text-3xl font-bold">{stat.value}</div>
-                <div className="text-sm opacity-90">{stat.title}</div>
-              </div>
-            </div>
-            <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-white/10 rounded-full"></div>
-          </div>
-        ))}
-      </div>
-
-      {/* Search and Filters */}
-      <div className="flex gap-4 mb-6">
-        <input
-          type="text"
-          placeholder="البحث عن سائق..."
-          className="flex-1 bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white placeholder-gray-400"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <select
-          className="bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white min-w-[120px]"
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-        >
-          <option>الحالة</option>
-          <option>اختر...</option>
-          <option>نشط</option>
-          <option>موقوف</option>
-          <option>قيد الانتظار</option>
-        </select>
-        <select
-          className="bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white min-w-[120px]"
-          value={cityFilter}
-          onChange={(e) => setCityFilter(e.target.value)}
-        >
-          <option>المدينة</option>
-          <option>اختر...</option>
-          <option>الرياض</option>
-          <option>جدة</option>
-          <option>الدمام</option>
-        </select>
-        <button className="bg-dark-200 text-white px-4 py-2 rounded-lg hover:bg-dark-100">
-          إعادة تعيين
-        </button>
-        <button className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 flex items-center gap-2">
-          <span>+</span>
-          إضافة جديد
-        </button>
-        <button className="bg-dark-200 text-white px-4 py-2 rounded-lg hover:bg-dark-100">
-          إعادة تعيين الفلتر
-        </button>
-      </div>
-
-      <Table
-        columns={driverManagementColumns}
-        data={driversData}
-        rowKey="id"
-      />
-    </div>
-  );
-
-  const renderDriverControl = () => (
-    <div className="space-y-6">
-      <div className="mb-6">
-        <h2 className="text-xl font-bold mb-2">التحكم في السائقين</h2>
-        <p className="text-gray-400">إدارة حالات السائقين وتعديل أو إيقاف حساباتهم</p>
-      </div>
-
-      {/* Search and Filters */}
-      <div className="flex gap-4 mb-6">
-        <input
-          type="text"
-          placeholder="البحث عن سائق..."
-          className="flex-1 bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white placeholder-gray-400"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <select
-          className="bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white min-w-[120px]"
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-        >
-          <option>الحالة</option>
-          <option>الكل</option>
-          <option>نشط</option>
-          <option>موقوف</option>
-          <option>محظور</option>
-        </select>
-        <button className="bg-dark-200 text-white px-4 py-2 rounded-lg hover:bg-dark-100">
-          إعادة تعيين
-        </button>
-      </div>
-
-      <Table
-        columns={driverControlColumns}
-        data={driversData}
-        rowKey="id"
-      />
-    </div>
-  );
-
-  const renderReports = () => (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-bold flex items-center gap-2">
-            <BarChart2 className="w-6 h-6 text-primary-500" />
-            التقارير والتحليلات
-          </h2>
-          <p className="text-gray-400 mt-1">عرض ومتابعة وحصائيات ومؤشرات الأداء المختلفة للسائقين</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <span className="text-gray-400 text-sm">نوع التقرير</span>
-          <select className="bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white">
-            <option>تقرير الأداء</option>
-          </select>
-        </div>
-      </div>
-
-      {/* Export Buttons */}
-      <div className="flex items-center gap-3 mb-6">
-        <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
-          <Download className="w-4 h-4" />
-          تصدير PDF
-        </button>
-        <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
-          <Download className="w-4 h-4" />
-          تصدير Excel
-        </button>
-      </div>
-
-      {/* Search and Date Filter */}
-      <div className="flex items-center gap-4 mb-6">
-        <div className="flex-1 relative">
-          <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-          <input
-            type="text"
-            placeholder="البحث عن السائق..."
-            className="w-full bg-dark-400 border border-dark-200 rounded-lg pr-10 pl-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-gray-400 text-sm">الفترة الزمنية</span>
-          <input
-            type="text"
-            value={dateRange}
-            onChange={(e) => setDateRange(e.target.value)}
-            className="bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white text-sm w-48"
-          />
-          <Calendar className="w-5 h-5 text-gray-400" />
-        </div>
-      </div>
-
-      {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        <div className="bg-gradient-to-r from-purple-600 to-purple-700 rounded-xl p-6 text-white">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-3xl font-bold">120,000</div>
-              <div className="text-sm opacity-90">إجمالي المدفوعات</div>
-            </div>
-            <div className="p-3 bg-white/20 rounded-full">
-              <BarChart2 className="w-6 h-6" />
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-xl p-6 text-white">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-3xl font-bold">8</div>
-              <div className="text-sm opacity-90">إجمالي الشكاوى</div>
-            </div>
-            <div className="p-3 bg-white/20 rounded-full">
-              <AlertTriangle className="w-6 h-6" />
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-gradient-to-r from-green-600 to-green-700 rounded-xl p-6 text-white">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-3xl font-bold">42</div>
-              <div className="text-sm opacity-90">السائقين النشطين</div>
-            </div>
-            <div className="p-3 bg-white/20 rounded-full">
-              <Users className="w-6 h-6" />
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-6 text-white">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-3xl font-bold">150</div>
-              <div className="text-sm opacity-90">إجمالي الرحلات</div>
-            </div>
-            <div className="p-3 bg-white/20 rounded-full">
-              <BarChart2 className="w-6 h-6" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Reports Table */}
-      <div className="bg-dark-200 rounded-xl p-6">
-        <h3 className="text-lg font-semibold mb-4">جدول أداء السائقين</h3>
-        <Table
-          columns={reportsColumns}
-          data={reportsData}
-          rowKey="id"
-          hoverable={true}
-          emptyText="لا توجد تقارير"
-        />
-      </div>
-    </div>
-  );
-
-  const renderNotifications = () => (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-bold">الإشعارات والتنبيهات</h2>
-        </div>
-      </div>
-
-      {/* Filters */}
-      <div className="flex items-center gap-4 mb-6">
-        <div className="flex-1 relative">
-          <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-          <input
-            type="text"
-            placeholder="البحث عن إشعار..."
-            className="w-full bg-dark-400 border border-dark-200 rounded-lg pr-10 pl-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        
-        <div className="flex items-center gap-2">
-          <span className="text-gray-400 text-sm">الفئة</span>
-          <select className="bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white min-w-[120px]">
-            <option>الكل</option>
-            <option>توثيق</option>
-            <option>عطيبة</option>
-          </select>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <span className="text-gray-400 text-sm">الأولوية</span>
-          <select className="bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white min-w-[120px]">
-            <option>الكل</option>
-            <option>عاجل</option>
-            <option>عادي</option>
-          </select>
-        </div>
-
-        <button className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors">
-          إعادة تعيين
-        </button>
-      </div>
-
-      {/* Notifications Table */}
-      <Table
-        columns={notificationsColumns}
-        data={notificationsData}
-        rowKey="id"
-        hoverable={true}
-        emptyText="لا توجد إشعارات"
-      />
-    </div>
-  );
-
-  const renderRatings = () => (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-bold flex items-center gap-2">
-            <Star className="w-6 h-6 text-yellow-500" />
-            التقييمات والشكاوى
-          </h2>
-          <p className="text-gray-400 mt-1">متابعة تقييمات المستخدمين للسائقين وتحليلها</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <span className="bg-primary-600 text-white px-3 py-1 rounded-full text-sm flex items-center gap-1">
-            <Star className="w-4 h-4" />
-            التقييمات: 2
-          </span>
-          <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm">
-            الشكاوى: 2
-          </span>
-        </div>
-      </div>
-
-      {/* Filters */}
-      <div className="flex items-center gap-4 mb-6">
-        <div className="flex-1 relative">
-          <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-          <input
-            type="text"
-            placeholder="البحث في التقييمات..."
-            className="w-full bg-dark-400 border border-dark-200 rounded-lg pr-10 pl-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        
-        <div className="flex items-center gap-2">
-          <span className="text-gray-400 text-sm">التقييم</span>
-          <select className="bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white min-w-[120px]">
-            <option>الكل</option>
-            <option>5 نجوم</option>
-            <option>4 نجوم</option>
-            <option>3 نجوم</option>
-            <option>2 نجوم</option>
-            <option>1 نجمة</option>
-          </select>
-        </div>
-
-        <button className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors">
-          إعادة تعيين
-        </button>
-      </div>
-
-      {/* Tab Navigation */}
-      <div className="flex items-center gap-4 mb-6">
-        <button className="bg-primary-600 text-white px-6 py-2 rounded-lg">
-          السائق
-        </button>
-        <button className="bg-dark-200 hover:bg-dark-100 text-gray-300 px-6 py-2 rounded-lg transition-colors">
-          الولي
-        </button>
-      </div>
-
-      {/* Ratings Table */}
-      <Table
-        columns={ratingsColumns}
-        data={ratingsData}
-        rowKey="id"
-        hoverable={true}
-        emptyText="لا توجد تقييمات"
-      />
-
-      {/* Pagination */}
-      <div className="flex items-center justify-between pt-4 border-t border-dark-200">
-        <div className="text-sm text-gray-400">
-          عرض 1 إلى 5 من 5 سجلات
-        </div>
-      </div>
-    </div>
-  );
-
   return (
     <div className="p-4 space-y-6">
       <div className="flex items-center justify-between">
@@ -1116,17 +706,72 @@ const Drivers: React.FC = () => {
           ))}
         </div>
 
-        {activeTab === 'الموافقات' && renderApprovals()}
-        {activeTab === 'إدارة السائقين' && renderDriverManagement()}
-        {activeTab === 'التحكم' && renderDriverControl()}
+        {activeTab === 'الموافقات' && (
+          <DriversApprovals
+            driversData={driversData}
+            approvalsColumns={approvalsColumns}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+            cityFilter={cityFilter}
+            setCityFilter={setCityFilter}
+          />
+        )}
+        {activeTab === 'إدارة السائقين' && (
+          <DriversManagement
+            stats={stats}
+            driverManagementColumns={driverManagementColumns}
+            driversData={driversData}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+            cityFilter={cityFilter}
+            setCityFilter={setCityFilter}
+          />
+        )}
+        {activeTab === 'التحكم' && (
+          <DriversControl
+            driversData={driversData}
+            driverControlColumns={driverControlColumns}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+          />
+        )}
         {activeTab === 'التتبع' && (
           <div className="text-center py-12">
             <p className="text-gray-400">صفحة التتبع قيد التطوير</p>
           </div>
         )}
-        {activeTab === 'التقييمات' && renderRatings()}
-        {activeTab === 'الإشعارات' && renderNotifications()}
-        {activeTab === 'التقارير' && renderReports()}
+        {activeTab === 'التقييمات' && (
+          <DriversRatings
+            ratingsData={ratingsData}
+            ratingsColumns={ratingsColumns}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+          />
+        )}
+        {activeTab === 'الإشعارات' && (
+          <DriversNotifications
+            notificationsData={notificationsData}
+            notificationsColumns={notificationsColumns}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+          />
+        )}
+        {activeTab === 'التقارير' && (
+          <DriversReports
+            reportsData={reportsData}
+            reportsColumns={reportsColumns}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            dateRange={dateRange}
+            setDateRange={setDateRange}
+          />
+        )}
       </div>
     </div>
   );
