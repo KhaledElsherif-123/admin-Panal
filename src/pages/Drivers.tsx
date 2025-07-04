@@ -5,7 +5,6 @@ import { ViewAction, EditAction, DeleteAction, SuspendAction } from '../componen
 import StatusBadge from '../components/ui/StatusBadge';
 import UserAvatar from '../components/ui/UserAvatar';
 import StarRating from '../components/ui/StarRating';
-import DriversApprovals from '../components/drivers/drivers-approvals/DriversApprovalsTab';
 import DriversManagement from '../components/drivers/DriversManagement';
 import DriversControl from '../components/drivers/DriversControl';
 import DriversReports from '../components/drivers/DriversReports';
@@ -13,9 +12,8 @@ import DriversNotifications from '../components/drivers/DriversNotifications';
 import DriversRatings from '../components/drivers/DriversRatings';
 import { configureStore } from '@reduxjs/toolkit';
 import driversReducer from '../store/slices/driversSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { fetchDrivers } from '../store/slices/driversSlice';
-import { RootState } from '../store';
 import type { AppDispatch } from '../store';
 import DriversApprovalComponent from '../components/drivers/drivers-approvals/DriversApprovalComponent';
 
@@ -311,7 +309,7 @@ export const store = configureStore({
 });
 
 const Drivers: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('إدارة السائقين');
+  const [activeTab, setActiveTab] = useState('الموافقات');
   const [searchTerm, setSearchTerm] = useState('');
   const [cityFilter, setCityFilter] = useState('اختر...');
   const [statusFilter, setStatusFilter] = useState('اختر...');
@@ -673,8 +671,7 @@ const Drivers: React.FC = () => {
         </div>
 
         {activeTab === 'الموافقات' && (
-          <DriversApprovalComponent
-          />
+          <DriversApprovalComponent/>
         )}
         {activeTab === 'إدارة السائقين' && (
           <DriversManagement
