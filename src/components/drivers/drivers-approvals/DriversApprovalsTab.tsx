@@ -11,6 +11,7 @@ interface DriversApprovalsProps {
   setStatusFilter: (v: string) => void;
   cityFilter: string;
   setCityFilter: (v: string) => void;
+  handleResetFilters: () => void;
 }
 
 const DriversApprovals: React.FC<DriversApprovalsProps> = ({
@@ -22,6 +23,7 @@ const DriversApprovals: React.FC<DriversApprovalsProps> = ({
   setStatusFilter,
   cityFilter,
   setCityFilter,
+  handleResetFilters,
 }) => (
   <div className="space-y-6">
     <div className="mb-6">
@@ -57,7 +59,10 @@ const DriversApprovals: React.FC<DriversApprovalsProps> = ({
         <option>جدة</option>
         <option> بغداد</option>
       </select>
-      <button className="bg-dark-200 text-white px-4 py-2 rounded-lg hover:bg-dark-100">
+      <button
+        className="bg-dark-200 text-white px-4 py-2 rounded-lg hover:bg-dark-100"
+        onClick={handleResetFilters}
+      >
         إعادة تعيين
       </button>
     </div>

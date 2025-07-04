@@ -56,17 +56,43 @@ interface Driver {
 
 const DriversManagementComponent: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { data: drivers, loading, error } = useSelector((state: RootState) => state.drivers);
+  const { data: drivers, loading, error } = useSelector(
+    (state: RootState) => state.drivers
+  ) as { data: Driver[]; loading: boolean; error: string | null };
   const navigate = useNavigate();
 
   // Filters (local state)
   const [searchTerm, setSearchTerm] = React.useState('');
   const [statusFilter, setStatusFilter] = React.useState('اختر...');
   const [cityFilter, setCityFilter] = React.useState('اختر...');
+  const [filteredDrivers, setFilteredDrivers] = React.useState<Driver[]>([]);
 
   useEffect(() => {
     dispatch(fetchDrivers());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (!drivers) {
+      setFilteredDrivers([]);
+      return;
+    }
+    setFilteredDrivers(
+      drivers
+        .filter((driver) =>
+          searchTerm === '' ||
+          driver.user?.userName?.includes(searchTerm) ||
+          driver.user?.phone?.includes(searchTerm)
+        )
+        .filter((driver) =>
+          statusFilter === 'اختر...' ||
+          (statusFilter === 'نشط' && !driver.isPause) ||
+          (statusFilter === 'موقوف' && driver.isPause)
+        )
+        .filter((driver) =>
+          cityFilter === 'اختر...' || driver.user?.city?.name === cityFilter
+        )
+    );
+  }, [drivers, searchTerm, statusFilter, cityFilter]);
 
   const handleViewDriver = (id: string) => {
     navigate(`/drivers/${id}`);
@@ -174,7 +200,7 @@ const DriversManagementComponent: React.FC = () => {
 
   return (
     <DriversManagement
-      driversData={drivers}
+      driversData={filteredDrivers}
       driverManagementColumns={driverManagementColumns}
       searchTerm={searchTerm}
       setSearchTerm={setSearchTerm}

@@ -55,20 +55,54 @@ interface Driver {
 
 const DriversApprovalComponent: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { data: drivers, loading, error } = useSelector((state: RootState) => state.drivers);
+  const { data: drivers, loading, error } = useSelector(
+    (state: RootState) => state.drivers
+  ) as { data: Driver[]; loading: boolean; error: string | null };
   const navigate = useNavigate();
 
   // Filters (local state)
   const [searchTerm, setSearchTerm] = React.useState('');
   const [statusFilter, setStatusFilter] = React.useState('اختر...');
   const [cityFilter, setCityFilter] = React.useState('اختر...');
+  const [filteredDrivers, setFilteredDrivers] = React.useState<Driver[]>([]);
 
   useEffect(() => {
     dispatch(fetchDrivers());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (!drivers) {
+      setFilteredDrivers([]);
+      return;
+    }
+    setFilteredDrivers(
+      drivers
+        .filter((driver) =>
+          searchTerm === '' ||
+          driver.user?.userName?.includes(searchTerm) ||
+          driver.user?.phone?.includes(searchTerm)
+        )
+        .filter((driver) => {
+          if (statusFilter === 'اختر...' || statusFilter === 'حالة المستندات' || statusFilter === 'الكل') return true;
+          if (statusFilter === 'مكتملة') return driver.isVerified;
+          if (statusFilter === 'غير مكتملة') return !driver.isVerified;
+          return true;
+        })
+        .filter((driver) => {
+          if (cityFilter === 'اختر...' || cityFilter === 'المدينة' || cityFilter === 'الكل') return true;
+          return driver.user?.city?.name === cityFilter;
+        })
+    );
+  }, [drivers, searchTerm, statusFilter, cityFilter]);
+
   const handleViewDriver = (id: string) => {
     navigate(`/drivers/${id}`);
+  };
+
+  const handleResetFilters = () => {
+    setSearchTerm('');
+    setStatusFilter('اختر...');
+    setCityFilter('اختر...');
   };
 
   // Define columns for the table
@@ -151,7 +185,7 @@ const DriversApprovalComponent: React.FC = () => {
 
   return (
     <DriversApprovals
-      driversData={drivers}
+      driversData={filteredDrivers}
       approvalsColumns={approvalsColumns}
       searchTerm={searchTerm}
       setSearchTerm={setSearchTerm}
@@ -159,6 +193,7 @@ const DriversApprovalComponent: React.FC = () => {
       setStatusFilter={setStatusFilter}
       cityFilter={cityFilter}
       setCityFilter={setCityFilter}
+      handleResetFilters={handleResetFilters}
     />
   );
 };
