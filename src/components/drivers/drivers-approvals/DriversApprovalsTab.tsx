@@ -1,9 +1,9 @@
 import React from 'react';
-import Table, { TableColumn } from '../ui/Table';
+import Table, { TableColumn } from '../../ui/Table';
 
 
 interface DriversApprovalsProps {
-  driversData: any[]; // Replace 'any[]' with your actual driver type if available
+  driversData: any[]; 
   approvalsColumns: TableColumn<any>[];
   searchTerm: string;
   setSearchTerm: (v: string) => void;

@@ -1,16 +1,23 @@
-import React, { useState } from 'react';
-import {  FileCheck, FileX, Check, X, Bell, MessageSquare, Settings, BarChart2, Users, FileText, Edit, Trash2, AlertTriangle, Star, User, Download, Calendar, Search, Filter } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import {  FileCheck, Check, X, Bell, MessageSquare, Settings, BarChart2, Users, FileText, Edit, Trash2, AlertTriangle, Star, User, Download, Calendar, Search, Filter } from 'lucide-react';
 import  { TableColumn } from '../components/ui/Table';
-import { ViewAction, EditAction, DeleteAction, ApproveAction, RejectAction, SuspendAction } from '../components/ui/TableActions';
+import { ViewAction, EditAction, DeleteAction, SuspendAction } from '../components/ui/TableActions';
 import StatusBadge from '../components/ui/StatusBadge';
 import UserAvatar from '../components/ui/UserAvatar';
 import StarRating from '../components/ui/StarRating';
-import DriversApprovals from '../components/drivers/DriversApprovals';
+import DriversApprovals from '../components/drivers/drivers-approvals/DriversApprovalsTab';
 import DriversManagement from '../components/drivers/DriversManagement';
 import DriversControl from '../components/drivers/DriversControl';
 import DriversReports from '../components/drivers/DriversReports';
 import DriversNotifications from '../components/drivers/DriversNotifications';
 import DriversRatings from '../components/drivers/DriversRatings';
+import { configureStore } from '@reduxjs/toolkit';
+import driversReducer from '../store/slices/driversSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchDrivers } from '../store/slices/driversSlice';
+import { RootState } from '../store';
+import type { AppDispatch } from '../store';
+import DriversApprovalComponent from '../components/drivers/drivers-approvals/DriversApprovalComponent';
 
 interface Driver {
   id: number;
@@ -297,6 +304,12 @@ const ratingsData: Rating[] = [
   }
 ];
 
+export const store = configureStore({
+  reducer: {
+    drivers: driversReducer,
+  },
+});
+
 const Drivers: React.FC = () => {
   const [activeTab, setActiveTab] = useState('إدارة السائقين');
   const [searchTerm, setSearchTerm] = useState('');
@@ -321,62 +334,7 @@ const Drivers: React.FC = () => {
     { title: 'موقوف', value: '1', icon: <X className="w-6 h-6" />, color: 'bg-red-600' },
   ];
 
-  // Table columns for approvals
-  const approvalsColumns: TableColumn<Driver>[] = [
-    {
-      key: 'name',
-      title: 'الاسم',
-      render: (_, record) => <UserAvatar name={record.name} email={record.phone} />
-    },
-    {
-      key: 'phone',
-      title: 'رقم الهاتف'
-    },
-    {
-      key: 'vehicle',
-      title: 'معلومات المركبة'
-    },
-    {
-      key: 'city',
-      title: 'المدينة'
-    },
-    {
-      key: 'date',
-      title: 'تاريخ التقديم'
-    },
-    {
-      key: 'documents',
-      title: 'حالة المستندات',
-      render: (value) => (
-        <span className={`flex items-center gap-2 ${
-          value === 'complete' ? 'text-success-400' : 'text-warning-400'
-        }`}>
-          {value === 'complete' ? (
-            <>
-              <FileCheck className="w-4 h-4" />
-              المستندات مكتملة
-            </>
-          ) : (
-            <>
-              <FileX className="w-4 h-4" />
-              المستندات غير مكتملة
-            </>
-          )}
-        </span>
-      )
-    },
-    {
-      key: 'actions',
-      title: 'الإجراءات',
-      render: (_, record) => (
-        <div className="flex items-center gap-2">
-          <ViewAction onClick={() => console.log('View', record.id)} />
-          <ApproveAction onClick={() => console.log('Approve', record.id)} />
-          <RejectAction onClick={() => console.log('Reject', record.id)} />
-        </div>
-      )
-    }
-  ];
+
 
   // Table columns for driver management
   const driverManagementColumns: TableColumn<Driver>[] = [
@@ -674,6 +632,14 @@ const Drivers: React.FC = () => {
     }
   ];
 
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    if (activeTab === 'الموافقات') {
+      dispatch(fetchDrivers());
+    }
+  }, [activeTab, dispatch]);
+
   return (
     <div className="p-4 space-y-6">
       <div className="flex items-center justify-between">
@@ -707,15 +673,7 @@ const Drivers: React.FC = () => {
         </div>
 
         {activeTab === 'الموافقات' && (
-          <DriversApprovals
-            driversData={driversData}
-            approvalsColumns={approvalsColumns}
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            statusFilter={statusFilter}
-            setStatusFilter={setStatusFilter}
-            cityFilter={cityFilter}
-            setCityFilter={setCityFilter}
+          <DriversApprovalComponent
           />
         )}
         {activeTab === 'إدارة السائقين' && (
