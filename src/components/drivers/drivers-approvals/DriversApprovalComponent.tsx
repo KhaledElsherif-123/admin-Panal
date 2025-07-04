@@ -5,6 +5,7 @@ import { RootState } from '../../../store';
 import type { AppDispatch } from '../../../store';
 import DriversApprovals from './DriversApprovalsTab';
 import { TableColumn } from '../../ui/Table';
+import { useNavigate } from 'react-router-dom';
 
 interface City {
   name: string;
@@ -55,6 +56,7 @@ interface Driver {
 const DriversApprovalComponent: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { data: drivers, loading, error } = useSelector((state: RootState) => state.drivers);
+  const navigate = useNavigate();
 
   // Filters (local state)
   const [searchTerm, setSearchTerm] = React.useState('');
@@ -64,6 +66,10 @@ const DriversApprovalComponent: React.FC = () => {
   useEffect(() => {
     dispatch(fetchDrivers());
   }, [dispatch]);
+
+  const handleViewDriver = (id: string) => {
+    navigate(`/drivers/${id}`);
+  };
 
   // Define columns for the table
   const approvalsColumns: TableColumn<Driver>[] = [
@@ -128,7 +134,11 @@ const DriversApprovalComponent: React.FC = () => {
           <button title="قبول" className="text-green-500 hover:text-green-700">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
           </button>
-          <button title="عرض" className="text-gray-400 hover:text-gray-600">
+          <button
+            title="عرض"
+            className="text-gray-400 hover:text-gray-600"
+            onClick={() => handleViewDriver(record.id)}
+          >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0a3 3 0 016 0zm6 0c0 5-9 9-9 9s-9-4-9-9a9 9 0 0118 0z" /></svg>
           </button>
         </div>

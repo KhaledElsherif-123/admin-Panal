@@ -14,6 +14,7 @@ import Ads from './pages/Ads';
 import Login from './pages/Login';
 import SystemSettings from './pages/SystemSettings';
 import Content from './pages/Content';
+import DriverDetailsPage from './components/drivers/drivers-approvals/DriverDetailsPage';
 
 const ProtectedRoute: React.FC = () => {
   const token = localStorage.getItem('token');
@@ -38,6 +39,7 @@ function App() {
           <Route path="ads" element={<Ads />} />
           <Route path="content" element={<Content />} />
           <Route path="system-settings" element={<SystemSettings />} />
+          <Route path="drivers/:id" element={<DriverDetailsPage />} />
           <Route index element={<Navigate to="/dashboard" replace />} />
         </Route>
       </Route>
