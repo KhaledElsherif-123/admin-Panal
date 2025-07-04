@@ -55,7 +55,7 @@ const DriversApprovals: React.FC<DriversApprovalsProps> = ({
         <option>الكل</option>
         <option>الرياض</option>
         <option>جدة</option>
-        <option>الدمام</option>
+        <option> بغداد</option>
       </select>
       <button className="bg-dark-200 text-white px-4 py-2 rounded-lg hover:bg-dark-100">
         إعادة تعيين

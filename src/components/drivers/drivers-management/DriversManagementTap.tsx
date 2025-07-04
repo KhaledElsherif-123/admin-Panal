@@ -1,14 +1,6 @@
 import React from 'react';
 import Table, { TableColumn } from '../../ui/Table';
 
-
-interface Stat {
-  title: string;
-  value: string;
-  icon: React.ReactNode;
-  color: string;
-}
-
 interface DriversManagementProps {
   driverManagementColumns: TableColumn<any>[];
   driversData: any[]; 
@@ -66,7 +58,6 @@ const DriversManagement: React.FC<DriversManagementProps> = ({
         <option>اختر...</option>
         <option>نشط</option>
         <option>موقوف</option>
-        <option>قيد الانتظار</option>
       </select>
       <select
         className="bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white min-w-[120px]"
@@ -78,6 +69,7 @@ const DriversManagement: React.FC<DriversManagementProps> = ({
         <option>الرياض</option>
         <option>جدة</option>
         <option>الدمام</option>
+        <option> بغداد</option>
       </select>
       <button className="bg-dark-200 text-white px-4 py-2 rounded-lg hover:bg-dark-100">
         إعادة تعيين
