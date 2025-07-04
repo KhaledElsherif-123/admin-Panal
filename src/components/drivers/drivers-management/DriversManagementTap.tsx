@@ -1,5 +1,5 @@
 import React from 'react';
-import Table, { TableColumn } from '../ui/Table';
+import Table, { TableColumn } from '../../ui/Table';
 
 
 interface Stat {
@@ -10,9 +10,8 @@ interface Stat {
 }
 
 interface DriversManagementProps {
-  stats: Stat[];
   driverManagementColumns: TableColumn<any>[];
-  driversData: any[]; // Replace 'any[]' with your actual driver type if available
+  driversData: any[]; 
   searchTerm: string;
   setSearchTerm: (v: string) => void;
   statusFilter: string;
@@ -22,7 +21,6 @@ interface DriversManagementProps {
 }
 
 const DriversManagement: React.FC<DriversManagementProps> = ({
-  stats,
   driverManagementColumns,
   driversData,
   searchTerm,
@@ -34,7 +32,7 @@ const DriversManagement: React.FC<DriversManagementProps> = ({
 }) => (
   <div className="space-y-6">
     {/* Statistics Cards */}
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+    {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
       {stats.map((stat, index) => (
         <div key={index} className={`${stat.color} rounded-xl p-6 text-white relative overflow-hidden`}>
           <div className="flex items-center justify-between mb-4">
@@ -49,7 +47,7 @@ const DriversManagement: React.FC<DriversManagementProps> = ({
           <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-white/10 rounded-full"></div>
         </div>
       ))}
-    </div>
+    </div> */}
     {/* Search and Filters */}
     <div className="flex gap-4 mb-6">
       <input

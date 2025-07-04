@@ -3,9 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchDrivers } from '../../../store/slices/driversSlice';
 import { RootState } from '../../../store';
 import type { AppDispatch } from '../../../store';
-import DriversApprovals from './DriversApprovalsTab';
 import { TableColumn } from '../../ui/Table';
 import { useNavigate } from 'react-router-dom';
+import DriversManagement from './DriversManagementTap';
+import { Check, AlertTriangle } from 'lucide-react';
 
 interface City {
   name: string;
@@ -53,7 +54,7 @@ interface Driver {
   user: User;
 }
 
-const DriversApprovalComponent: React.FC = () => {
+const DriversManagementComponent: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { data: drivers, loading, error } = useSelector((state: RootState) => state.drivers);
   const navigate = useNavigate();
@@ -72,7 +73,7 @@ const DriversApprovalComponent: React.FC = () => {
   };
 
   // Define columns for the table
-  const approvalsColumns: TableColumn<Driver>[] = [
+  const driverManagementColumns: TableColumn<Driver>[] = [
     {
       key: 'userName',
       title: 'الاسم',
@@ -97,31 +98,53 @@ const DriversApprovalComponent: React.FC = () => {
       render: (_: any, record: Driver) => record.user?.city?.name || '-',
     },
     {
-      key: 'createdAt',
-      title: 'تاريخ التقديم',
-      render: (_: any, record: Driver) => new Date(record.createdAt).toLocaleDateString('ar-EG'),
+      key: 'classification',
+      title: 'التصنيف',
+      render: () => <span className="text-green-400">مجموعة مكتملة</span>,
     },
     {
-      key: 'documents',
-      title: 'حالة المستندات',
-      render: (_: any, record: Driver) => {
-        const isComplete = record.isVerified;
-        return (
-          <span className={`flex items-center gap-1 text-sm font-medium ${isComplete ? 'text-green-400' : 'text-yellow-400'}`}>
-            {isComplete ? (
-              <>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2l4-4" /></svg>
-                المستندات مكتملة
-              </>
-            ) : (
-              <>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a5 5 0 00-10 0v2a2 2 0 00-2 2v5a2 2 0 002 2h10a2 2 0 002-2v-5a2 2 0 00-2-2z" /></svg>
-                المستندات غير مكتملة
-              </>
-            )}
-          </span>
-        );
-      }
+      key: 'isPause',
+      title: 'الحالة',
+      render: ( _: any, record: Driver) =>
+        record.isPause ? (
+          <div className="flex items-center gap-1 text-yellow-400">
+            <AlertTriangle className="w-4 h-4" />
+            موقوف
+          </div>
+        ) : (
+          <div className="flex items-center gap-1 text-green-400">
+            <Check className="w-4 h-4" />
+            نشط
+          </div>
+        ),
+    },
+    {
+      key: 'rating',
+      title: 'التقييم',
+      render: () => (
+        <span className="text-yellow-400 font-bold">★★★★☆ (4.2)</span>
+      ),
+    },
+    {
+      key: 'trips',
+      title: 'عدد الرحلات',
+      render: () => <span className="font-medium">120</span>,
+    },
+    {
+      key: "isVerified",
+      title: 'التحقق',
+      render: (_: any, record: Driver) =>
+        record.isVerified ? (
+          <div className="flex items-center gap-1 text-green-400">
+            <Check className="w-4 h-4" />
+            تم التحقق
+          </div>
+        ) : (
+          <div className="flex items-center gap-1 text-yellow-400">
+            <AlertTriangle className="w-4 h-4" />
+            غير مفعل
+          </div>
+        ),
     },
     {
       key: 'actions',
@@ -150,9 +173,9 @@ const DriversApprovalComponent: React.FC = () => {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <DriversApprovals
+    <DriversManagement
       driversData={drivers}
-      approvalsColumns={approvalsColumns}
+      driverManagementColumns={driverManagementColumns}
       searchTerm={searchTerm}
       setSearchTerm={setSearchTerm}
       statusFilter={statusFilter}
@@ -163,4 +186,4 @@ const DriversApprovalComponent: React.FC = () => {
   );
 };
 
-export default DriversApprovalComponent;
+export default DriversManagementComponent;

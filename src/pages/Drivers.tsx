@@ -5,7 +5,6 @@ import { ViewAction, EditAction, DeleteAction, SuspendAction } from '../componen
 import StatusBadge from '../components/ui/StatusBadge';
 import UserAvatar from '../components/ui/UserAvatar';
 import StarRating from '../components/ui/StarRating';
-import DriversManagement from '../components/drivers/DriversManagement';
 import DriversControl from '../components/drivers/DriversControl';
 import DriversReports from '../components/drivers/DriversReports';
 import DriversNotifications from '../components/drivers/DriversNotifications';
@@ -16,6 +15,8 @@ import { useDispatch } from 'react-redux';
 import { fetchDrivers } from '../store/slices/driversSlice';
 import type { AppDispatch } from '../store';
 import DriversApprovalComponent from '../components/drivers/drivers-approvals/DriversApprovalComponent';
+import DriversManagementTap from '../components/drivers/drivers-management/DriversManagementTap';
+import DriversManagementComponent from '../components/drivers/drivers-management/DriversManagementComponent';
 
 interface Driver {
   id: number;
@@ -674,17 +675,7 @@ const Drivers: React.FC = () => {
           <DriversApprovalComponent/>
         )}
         {activeTab === 'إدارة السائقين' && (
-          <DriversManagement
-            stats={stats}
-            driverManagementColumns={driverManagementColumns}
-            driversData={driversData}
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            statusFilter={statusFilter}
-            setStatusFilter={setStatusFilter}
-            cityFilter={cityFilter}
-            setCityFilter={setCityFilter}
-          />
+          <DriversManagementComponent/>
         )}
         {activeTab === 'التحكم' && (
           <DriversControl
