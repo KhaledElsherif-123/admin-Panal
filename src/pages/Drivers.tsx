@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {  FileCheck, Check, X, Bell, MessageSquare, Settings, BarChart2, Users, FileText, Edit, Trash2, AlertTriangle, Star, User, Download, Calendar, Search, Filter } from 'lucide-react';
 import  { TableColumn } from '../components/ui/Table';
-import { ViewAction, EditAction, DeleteAction, SuspendAction } from '../components/ui/TableActions';
+import { ViewAction } from '../components/ui/TableActions';
 import StatusBadge from '../components/ui/StatusBadge';
 import UserAvatar from '../components/ui/UserAvatar';
 import StarRating from '../components/ui/StarRating';
@@ -15,7 +15,6 @@ import { useDispatch } from 'react-redux';
 import { fetchDrivers } from '../store/slices/driversSlice';
 import type { AppDispatch } from '../store';
 import DriversApprovalComponent from '../components/drivers/drivers-approvals/DriversApprovalComponent';
-import DriversManagementTap from '../components/drivers/drivers-management/DriversManagementTap';
 import DriversManagementComponent from '../components/drivers/drivers-management/DriversManagementComponent';
 
 interface Driver {
@@ -312,7 +311,6 @@ export const store = configureStore({
 const Drivers: React.FC = () => {
   const [activeTab, setActiveTab] = useState('الموافقات');
   const [searchTerm, setSearchTerm] = useState('');
-  const [cityFilter, setCityFilter] = useState('اختر...');
   const [statusFilter, setStatusFilter] = useState('اختر...');
   const [dateRange, setDateRange] = useState('3/30/2025 - 3/1/2025');
 
@@ -324,87 +322,6 @@ const Drivers: React.FC = () => {
     { icon: <MessageSquare className="w-5 h-5" />, label: 'التقييمات', count: 3 },
     { icon: <Bell className="w-5 h-5" />, label: 'الإشعارات', count: 5 },
     { icon: <BarChart2 className="w-5 h-5" />, label: 'التقارير', count: null },
-  ];
-
-  const stats = [
-    { title: 'إجمالي', value: '5', icon: <Users className="w-6 h-6" />, color: 'bg-blue-600' },
-    { title: 'نشط', value: '2', icon: <User className="w-6 h-6" />, color: 'bg-green-600' },
-    { title: 'قيد الانتظار', value: '0', icon: <FileCheck className="w-6 h-6" />, color: 'bg-yellow-600' },
-    { title: 'موقوف', value: '1', icon: <X className="w-6 h-6" />, color: 'bg-red-600' },
-  ];
-
-
-
-  // Table columns for driver management
-  const driverManagementColumns: TableColumn<Driver>[] = [
-    {
-      key: 'name',
-      title: 'الاسم',
-      sortable: true,
-      render: (_, record) => <UserAvatar name={record.name} email={record.phone} />
-    },
-    {
-      key: 'vehicle',
-      title: 'معلومات المركبة'
-    },
-    {
-      key: 'city',
-      title: 'المدينة',
-      sortable: true
-    },
-    {
-      key: 'classification',
-      title: 'التصنيف',
-      render: (value) => <span className="text-success-400 text-sm">{value}</span>
-    },
-    {
-      key: 'status',
-      title: 'الحالة',
-      sortable: true,
-      render: (value) => {
-        const statusMap = {
-          active: { text: 'نشط', variant: 'success' as const },
-          suspended: { text: 'موقوف', variant: 'warning' as const },
-          pending: { text: 'قيد الانتظار', variant: 'info' as const }
-        };
-        const status = statusMap[value as keyof typeof statusMap];
-        return <StatusBadge status={status.text} variant={status.variant} />;
-      }
-    },
-    {
-      key: 'rating',
-      title: 'التقييم',
-      sortable: true,
-      render: (value) => <StarRating rating={value} />
-    },
-    {
-      key: 'trips',
-      title: 'عدد الرحلات',
-      sortable: true,
-      render: (value) => <span className="font-medium">{value}</span>
-    },
-    {
-      key: 'verification',
-      title: 'التحقق',
-      render: () => (
-        <div className="flex items-center gap-1">
-          <Check className="w-4 h-4 text-success-400" />
-          <span className="text-success-400 text-sm">تم التحقق</span>
-        </div>
-      )
-    },
-    {
-      key: 'actions',
-      title: 'الإجراءات',
-      render: (_, record) => (
-        <div className="flex items-center gap-2">
-          <ViewAction onClick={() => console.log('View', record.id)} />
-          <EditAction onClick={() => console.log('Edit', record.id)} />
-          <SuspendAction onClick={() => console.log('Suspend', record.id)} />
-          <DeleteAction onClick={() => console.log('Delete', record.id)} />
-        </div>
-      )
-    }
   ];
 
   // Table columns for driver control
