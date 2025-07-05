@@ -14,12 +14,18 @@ const DriversRatingsComponent: React.FC<DriversRatingsComponentProps> = ({ drive
   const dispatch = useDispatch<AppDispatch>();
   const { ratingsData, ratingsLoading, ratingsError } = useSelector((state: RootState) => state.drivers);
   const [searchTerm, setSearchTerm] = useState('');
+  const [ratingFilter, setRatingFilter] = useState('الكل');
 
   useEffect(() => {
     if (driverId) {
       dispatch(fetchDriverRatings({ driverId, page: 1, pageSize: 10 }));
     }
   }, [dispatch, driverId]);
+
+  const handleResetFilters = () => {
+    setSearchTerm('');
+    setRatingFilter('الكل');
+  };
 
   const ratingsColumns: TableColumn<any>[] = [
     {
@@ -55,6 +61,22 @@ const DriversRatingsComponent: React.FC<DriversRatingsComponentProps> = ({ drive
     },
   ];
 
+  const filteredRatings = ratingsData.filter((item: any) => {
+    // Filter by search term
+    const matchesSearch =
+      !searchTerm ||
+      item.rate?.user?.userName?.includes(searchTerm) ||
+      item.driver?.user?.userName?.includes(searchTerm) ||
+      item.rate?.comment?.includes(searchTerm);
+
+    // Filter by rating
+    const matchesRating =
+      ratingFilter === 'الكل' ||
+      (item.rate?.rating && item.rate.rating.toString() === ratingFilter);
+
+    return matchesSearch && matchesRating;
+  });
+
   if (ratingsLoading) return <div>Loading...</div>;
   if (ratingsError) return <div>Error: {ratingsError}</div>;
 
@@ -63,10 +85,13 @@ const DriversRatingsComponent: React.FC<DriversRatingsComponentProps> = ({ drive
 
   return (
     <DriversRatings
-      ratingsData={ratingsData}
+      ratingsData={filteredRatings}
       ratingsColumns={ratingsColumns}
       searchTerm={searchTerm}
       setSearchTerm={setSearchTerm}
+      ratingFilter={ratingFilter}
+      setRatingFilter={setRatingFilter}
+      handleResetFilters={handleResetFilters}
     />
   );
 };

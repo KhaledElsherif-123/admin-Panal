@@ -7,6 +7,9 @@ interface DriversRatingsProps {
   ratingsColumns: TableColumn<any>[];
   searchTerm: string;
   setSearchTerm: (v: string) => void;
+  ratingFilter: string;
+  setRatingFilter: (v: string) => void;
+  handleResetFilters: () => void;
 }
 
 const DriversRatings: React.FC<DriversRatingsProps> = ({
@@ -14,6 +17,9 @@ const DriversRatings: React.FC<DriversRatingsProps> = ({
   ratingsColumns,
   searchTerm,
   setSearchTerm,
+  ratingFilter,
+  setRatingFilter,
+  handleResetFilters,
 }) => (
   <div className="space-y-6">
     {/* Header */}
@@ -49,16 +55,23 @@ const DriversRatings: React.FC<DriversRatingsProps> = ({
       </div>
       <div className="flex items-center gap-2">
         <span className="text-gray-400 text-sm">التقييم</span>
-        <select className="bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white min-w-[120px]">
-          <option>الكل</option>
-          <option>5 نجوم</option>
-          <option>4 نجوم</option>
-          <option>3 نجوم</option>
-          <option>2 نجوم</option>
-          <option>1 نجمة</option>
+        <select
+          className="bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white min-w-[120px]"
+          value={ratingFilter}
+          onChange={(e) => setRatingFilter(e.target.value)}
+        >
+          <option value="الكل">الكل</option>
+          <option value="5">5 نجوم</option>
+          <option value="4">4 نجوم</option>
+          <option value="3">3 نجوم</option>
+          <option value="2">2 نجوم</option>
+          <option value="1">1 نجمة</option>
         </select>
       </div>
-      <button className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors">
+      <button
+        className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors"
+        onClick={handleResetFilters}
+      >
         إعادة تعيين
       </button>
     </div>
