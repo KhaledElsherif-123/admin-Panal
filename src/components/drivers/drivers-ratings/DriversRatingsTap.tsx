@@ -1,9 +1,9 @@
 import React from 'react';
-import Table, { TableColumn } from '../ui/Table';
+import Table, { TableColumn } from '../../ui/Table';
 import { Star, Search } from 'lucide-react';
 
 interface DriversRatingsProps {
-  ratingsData: any[]; // Replace 'any[]' with your actual type if available
+  ratingsData: any[]; 
   ratingsColumns: TableColumn<any>[];
   searchTerm: string;
   setSearchTerm: (v: string) => void;
@@ -60,15 +60,6 @@ const DriversRatings: React.FC<DriversRatingsProps> = ({
       </div>
       <button className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors">
         إعادة تعيين
-      </button>
-    </div>
-    {/* Tab Navigation */}
-    <div className="flex items-center gap-4 mb-6">
-      <button className="bg-primary-600 text-white px-6 py-2 rounded-lg">
-        السائق
-      </button>
-      <button className="bg-dark-200 hover:bg-dark-100 text-gray-300 px-6 py-2 rounded-lg transition-colors">
-        الولي
       </button>
     </div>
     {/* Ratings Table */}

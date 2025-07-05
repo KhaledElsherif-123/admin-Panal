@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {  FileCheck, Check, X, Bell, MessageSquare, Settings, BarChart2, Users, FileText, Edit, Trash2, AlertTriangle, Star, User, Download, Calendar, Search, Filter } from 'lucide-react';
+import {  Check, Bell, MessageSquare, Settings, BarChart2, Users, FileText,  User } from 'lucide-react';
 import  { TableColumn } from '../components/ui/Table';
 import { ViewAction } from '../components/ui/TableActions';
 import StatusBadge from '../components/ui/StatusBadge';
@@ -8,7 +8,6 @@ import StarRating from '../components/ui/StarRating';
 import DriversControl from '../components/drivers/DriversControl';
 import DriversReports from '../components/drivers/DriversReports';
 import DriversNotifications from '../components/drivers/DriversNotifications';
-import DriversRatings from '../components/drivers/DriversRatings';
 import { configureStore } from '@reduxjs/toolkit';
 import driversReducer from '../store/slices/driversSlice';
 import { useDispatch } from 'react-redux';
@@ -16,6 +15,7 @@ import { fetchDrivers } from '../store/slices/driversSlice';
 import type { AppDispatch } from '../store';
 import DriversApprovalComponent from '../components/drivers/drivers-approvals/DriversApprovalComponent';
 import DriversManagementComponent from '../components/drivers/drivers-management/DriversManagementComponent';
+import DriversRatingsComponent from '../components/drivers/drivers-ratings/DriversRatingsComponent';
 
 interface Driver {
   id: number;
@@ -52,14 +52,6 @@ interface Notification {
   status: 'confirmed' | 'pending' | 'rejected' | 'waiting';
 }
 
-interface Rating {
-  id: string;
-  driverName: string;
-  parentName: string;
-  comment: string;
-  rating: number;
-  date: string;
-}
 
 const driversData: Driver[] = [
   {
@@ -259,49 +251,6 @@ const notificationsData: Notification[] = [
   }
 ];
 
-const ratingsData: Rating[] = [
-  {
-    id: '1',
-    driverName: 'أحمد محمد',
-    parentName: 'محمد علي',
-    comment: 'سائق ممتاز ومنتظم بالمواعيد',
-    rating: 4.5,
-    date: '2023-08-10'
-  },
-  {
-    id: '2',
-    driverName: 'خالد العتيبي',
-    parentName: 'عبدالله محمد',
-    comment: 'جيد ولكن يتأخر أحياناً',
-    rating: 3.5,
-    date: '2023-08-11'
-  },
-  {
-    id: '3',
-    driverName: 'سارة الشمري',
-    parentName: 'فاطمة نور',
-    comment: 'متأكدة عنا ويهتم بسلامة الطلاب',
-    rating: 5.0,
-    date: '2023-08-12'
-  },
-  {
-    id: '4',
-    driverName: 'أحمد محمد',
-    parentName: 'سعد خالد',
-    comment: 'سائق جيد ومتعاون',
-    rating: 4.0,
-    date: '2023-08-13'
-  },
-  {
-    id: '5',
-    driverName: 'فهد المطيري',
-    parentName: 'محمد علي',
-    comment: 'هناك مشاكل في الالتزام بالمواعيد',
-    rating: 2.5,
-    date: '2023-08-14'
-  }
-];
-
 export const store = configureStore({
   reducer: {
     drivers: driversReducer,
@@ -313,6 +262,7 @@ const Drivers: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('اختر...');
   const [dateRange, setDateRange] = useState('3/30/2025 - 3/1/2025');
+  const [selectedDriverId, setSelectedDriverId] = useState('');
 
   const menuItems = [
     { icon: <FileText className="w-5 h-5" />, label: 'الموافقات', count: null },
@@ -497,56 +447,6 @@ const Drivers: React.FC = () => {
     }
   ];
 
-  // Ratings columns
-  const ratingsColumns: TableColumn<Rating>[] = [
-    {
-      key: 'actions',
-      title: 'الإجراءات',
-      render: () => (
-        <ViewAction onClick={() => console.log('View rating')} />
-      )
-    },
-    {
-      key: 'date',
-      title: 'التاريخ',
-      render: (value) => (
-        <span className="text-gray-400 text-sm">{value}</span>
-      )
-    },
-    {
-      key: 'parentName',
-      title: 'اسم ولي الأمر',
-      render: (value) => (
-        <span className="text-white font-medium">{value}</span>
-      )
-    },
-    {
-      key: 'comment',
-      title: 'التعليق',
-      render: (value) => (
-        <span className="text-gray-300">{value}</span>
-      )
-    },
-    {
-      key: 'rating',
-      title: 'التقييم',
-      render: (value) => (
-        <StarRating rating={value} showValue={true} />
-      )
-    },
-    {
-      key: 'driverName',
-      title: 'الاسم',
-      render: (value) => (
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary-600 rounded-full flex items-center justify-center">
-            <User className="w-5 h-5 text-white" />
-          </div>
-          <span className="font-medium text-white">{value}</span>
-        </div>
-      )
-    }
-  ];
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -610,12 +510,7 @@ const Drivers: React.FC = () => {
           </div>
         )}
         {activeTab === 'التقييمات' && (
-          <DriversRatings
-            ratingsData={ratingsData}
-            ratingsColumns={ratingsColumns}
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-          />
+          <DriversRatingsComponent driverId="161914cb-37bc-4892-95f5-668c8282bf95" />
         )}
         {activeTab === 'الإشعارات' && (
           <DriversNotifications

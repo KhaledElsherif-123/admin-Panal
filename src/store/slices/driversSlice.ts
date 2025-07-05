@@ -20,10 +20,22 @@ export const fetchDriverById = createAsyncThunk(
     const response = await axios.get(`https://mahfouzapp.com/drivers/${id}`, {
       headers: { Authorization: `Bearer ${token}` }
     });
-    return response.data; // returns the whole response, including message
+    return response.data;
   }
 );
 
+export const fetchDriverRatings = createAsyncThunk(
+  'drivers/fetchDriverRatings',
+  async ({ driverId, page = 1, pageSize = 10 }: { driverId: string, page?: number, pageSize?: number }) => {
+    const token = localStorage.getItem('token');
+    if (!token) throw new Error('No token found in localStorage');
+    const response = await axios.get(
+      `https://mahfouzapp.com/drivers/rates/all?page=${page}&pageSize=${pageSize}&driverId=${driverId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    return response.data;
+  }
+);
 
 //try and catch
 const driversSlice = createSlice({
@@ -35,6 +47,11 @@ const driversSlice = createSlice({
     selectedDriver: null,
     selectedDriverLoading: false,
     selectedDriverError: null as string | null,
+    ratingsData: [],
+    ratingsLoading: false,
+    ratingsError: null as string | null,
+    ratingsTotalItems: 0,
+    ratingsTotalPages: 0,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -63,6 +80,20 @@ const driversSlice = createSlice({
       .addCase(fetchDriverById.rejected, (state, action) => {
         state.selectedDriverLoading = false;
         state.selectedDriverError = action.error.message || 'Failed to fetch driver';
+      })
+      .addCase(fetchDriverRatings.pending, (state) => {
+        state.ratingsLoading = true;
+        state.ratingsError = null;
+      })
+      .addCase(fetchDriverRatings.fulfilled, (state, action) => {
+        state.ratingsLoading = false;
+        state.ratingsData = action.payload.data;
+        state.ratingsTotalItems = action.payload.totalItems;
+        state.ratingsTotalPages = action.payload.totalPages;
+      })
+      .addCase(fetchDriverRatings.rejected, (state, action) => {
+        state.ratingsLoading = false;
+        state.ratingsError = action.error.message || 'Failed to fetch driver ratings';
       });
   },
 });
