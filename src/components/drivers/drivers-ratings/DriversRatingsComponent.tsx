@@ -15,12 +15,34 @@ const DriversRatingsComponent: React.FC<DriversRatingsComponentProps> = ({ drive
   const { ratingsData, ratingsLoading, ratingsError } = useSelector((state: RootState) => state.drivers);
   const [searchTerm, setSearchTerm] = useState('');
   const [ratingFilter, setRatingFilter] = useState('الكل');
+  const [filteredRatings, setFilteredRatings] = useState<any[]>([]);
 
   useEffect(() => {
     if (driverId) {
       dispatch(fetchDriverRatings({ driverId, page: 1, pageSize: 10 }));
     }
   }, [dispatch, driverId]);
+
+  // Apply filters using useEffect
+  useEffect(() => {
+    const filtered = ratingsData.filter((item: any) => {
+      // Filter by search term
+      const matchesSearch =
+        !searchTerm ||
+        item.rate?.user?.userName?.includes(searchTerm) ||
+        item.driver?.user?.userName?.includes(searchTerm) ||
+        item.rate?.comment?.includes(searchTerm);
+
+      // Filter by rating
+      const matchesRating =
+        ratingFilter === 'الكل' ||
+        (item.rate?.rating && item.rate.rating.toString() === ratingFilter);
+
+      return matchesSearch && matchesRating;
+    });
+
+    setFilteredRatings(filtered);
+  }, [ratingsData, searchTerm, ratingFilter]);
 
   const handleResetFilters = () => {
     setSearchTerm('');
@@ -60,22 +82,6 @@ const DriversRatingsComponent: React.FC<DriversRatingsComponentProps> = ({ drive
         record.rate?.createdAt ? new Date(record.rate.createdAt).toLocaleDateString('ar-EG') : '-',
     },
   ];
-
-  const filteredRatings = ratingsData.filter((item: any) => {
-    // Filter by search term
-    const matchesSearch =
-      !searchTerm ||
-      item.rate?.user?.userName?.includes(searchTerm) ||
-      item.driver?.user?.userName?.includes(searchTerm) ||
-      item.rate?.comment?.includes(searchTerm);
-
-    // Filter by rating
-    const matchesRating =
-      ratingFilter === 'الكل' ||
-      (item.rate?.rating && item.rate.rating.toString() === ratingFilter);
-
-    return matchesSearch && matchesRating;
-  });
 
   if (ratingsLoading) return <div>Loading...</div>;
   if (ratingsError) return <div>Error: {ratingsError}</div>;

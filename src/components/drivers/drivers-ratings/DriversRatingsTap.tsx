@@ -34,12 +34,12 @@ const DriversRatings: React.FC<DriversRatingsProps> = ({
       <div className="flex items-center gap-3">
         <span className="bg-primary-600 text-white px-3 py-1 rounded-full text-sm flex items-center gap-1">
           <Star className="w-4 h-4" />
-          التقييمات: 2
+          التقييمات: {ratingsData.length}
         </span>
         <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm">
           الشكاوى: 2
         </span>
-      </div>
+      </div>   
     </div>
     {/* Filters */}
     <div className="flex items-center gap-4 mb-6">
@@ -86,7 +86,7 @@ const DriversRatings: React.FC<DriversRatingsProps> = ({
     {/* Pagination */}
     <div className="flex items-center justify-between pt-4 border-t border-dark-200">
       <div className="text-sm text-gray-400">
-        عرض 1 إلى 5 من 5 سجلات
+        عرض 1 إلى {ratingsData.length} من {ratingsData.length} سجلات
       </div>
     </div>
   </div>
