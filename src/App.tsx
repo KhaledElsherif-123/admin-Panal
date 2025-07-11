@@ -14,6 +14,7 @@ import Ads from './pages/Ads';
 import Login from './pages/Login';
 import SystemSettings from './pages/SystemSettings';
 import Content from './pages/Content';
+import SubscriptionPlans from './pages/subscriptionPlans';
 import DriverDetailsPage from './components/drivers/drivers-approvals/DriverDetailsPage';
 
 const ProtectedRoute: React.FC = () => {
@@ -32,6 +33,7 @@ function App() {
           <Route path="users" element={<Users />} />
           <Route path="agents" element={<Agents />} />
           <Route path="drivers" element={<Drivers />} />
+          <Route path="plans" element={<SubscriptionPlans />} />
           <Route path="subscriptions" element={<Subscriptions />} />
           <Route path="reports" element={<Reports />} />
           <Route path="settings" element={<Settings />} />
