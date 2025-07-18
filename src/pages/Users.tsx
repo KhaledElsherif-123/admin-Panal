@@ -12,14 +12,13 @@ const Users: React.FC = () => {
   const dispatch = useAppDispatch();
   const { users, loading, error, totalItems } = useAppSelector(state => state.users);
 
-  const [roleFilter, setRoleFilter] = useState(''); // e.g. "PARENT", "STUDENT", etc.
+  const [roleFilter, setRoleFilter] = useState(''); 
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     dispatch(fetchAllUsers({
       role: roleFilter || undefined,
       userName: searchTerm || undefined,
-      // isVerified: true, // add if you want to filter by isVerified
     }));
   }, [dispatch, roleFilter, searchTerm]);
 
