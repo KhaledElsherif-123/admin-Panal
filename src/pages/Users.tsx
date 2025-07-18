@@ -58,7 +58,7 @@ const Users: React.FC = () => {
       key: 'userName',
       title: 'اسم المستخدم',
       sortable: true,
-      render: (value, record) => (
+      render: (_, record) => (
         <UserAvatar name={record.userName} email={record.userName} size="md" />
       )
     },
