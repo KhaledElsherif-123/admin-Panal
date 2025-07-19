@@ -6,6 +6,7 @@ import driversReducer from './slices/driversSlice';
 import subscriptionReducer from './slices/subscriptionSlice';
 import appsettingsReducer from './slices/appsettingsSlice';
 import usersReducer from './slices/usersSlices';
+import statsReducer from './slices/statsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     subscription: subscriptionReducer,
     appsettings: appsettingsReducer,
     users: usersReducer,
+    stats: statsReducer,
   },
 });
 
