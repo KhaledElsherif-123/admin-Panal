@@ -16,23 +16,47 @@ import SystemSettings from './pages/SystemSettings';
 import Content from './pages/Content';
 import SubscriptionPlans from './pages/subscriptionPlans';
 import DriverDetailsPage from './components/drivers/drivers-approvals/DriverDetailsPage';
+import School from './pages/School/School';
+import City from './pages/City/City';
+import Country from './pages/Country';
+import SchoolDetails from './pages/School/SchoolDetails';
+import CityDetails from './pages/City/CityDetails';
+import Groups from './pages/Groups/Groups';
+import GroupsDetails from './pages/Groups/GroupsDetails';
+import Trips from './pages/Trips/Trips';
+import TripDetails from './pages/Trips/TripDetails';
+import { isTokenExpired } from './utils/dateUtils';
 
 const ProtectedRoute: React.FC = () => {
   const token = localStorage.getItem('token');
-  return token ? <Outlet /> : <Navigate to="/login" replace />;
+  if (!token || isTokenExpired(token)) {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    return <Navigate to="/login" replace />;
+  }
+  return <Outlet />;
 };
 
 function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route element={<ProtectedRoute />}>
-        <Route path="/*" element={<MainLayout />}>
+      <Route element={<ProtectedRoute />}> 
+        <Route path="/*" element={<MainLayout />}> 
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="schools" element={<Schools />} />
+          <Route path="school" element={<School />} />
+          <Route path="school/:id" element={<SchoolDetails />} />
+          <Route path="city" element={<City />} />
+          <Route path="city/:id" element={<CityDetails />} />
+          <Route path="country" element={<Country />} />
           <Route path="users" element={<Users />} />
           <Route path="agents" element={<Agents />} />
           <Route path="drivers" element={<Drivers />} />
+          <Route path="groups" element={<Groups />} />
+          <Route path="groups/:id" element={<GroupsDetails />} />
+          <Route path="trips" element={<Trips />} />
+          <Route path="trips/:id" element={<TripDetails />} />
           <Route path="plans" element={<SubscriptionPlans />} />
           <Route path="subscriptions" element={<Subscriptions />} />
           <Route path="reports" element={<Reports />} />
@@ -45,7 +69,7 @@ function App() {
           <Route index element={<Navigate to="/dashboard" replace />} />
         </Route>
       </Route>
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      <Route path="/" element={<Navigate to="/login" replace />} />
     </Routes>
   );
 }

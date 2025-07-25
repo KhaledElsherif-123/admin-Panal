@@ -7,7 +7,11 @@ import subscriptionReducer from './slices/subscriptionSlice';
 import appsettingsReducer from './slices/appsettingsSlice';
 import usersReducer from './slices/usersSlices';
 import statsReducer from './slices/statsSlice';
-
+import countriesReducer from './slices/countriesSlice';
+import cityReducer from './slices/citySlice'
+import schoolReducer from './slices/schoolSlices'
+import tripGroupsReducer from './slices/groupsSlice';
+import tripsReducer from './slices/tripsSlices';
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -18,6 +22,11 @@ export const store = configureStore({
     appsettings: appsettingsReducer,
     users: usersReducer,
     stats: statsReducer,
+    countries: countriesReducer,
+    city:cityReducer,
+    school:schoolReducer,
+    tripGroups: tripGroupsReducer,
+    trips: tripsReducer,
   },
 });
 
