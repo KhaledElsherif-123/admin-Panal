@@ -3,7 +3,7 @@ import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
 import Dashboard from './pages/Dashboard';
 import Schools from './pages/Schools';
-import Users from './pages/Users';
+import Users from './pages/Users/Users';
 import Agents from './pages/Agents';
 import Subscriptions from './pages/Subscriptions';
 import Reports from './pages/Reports';

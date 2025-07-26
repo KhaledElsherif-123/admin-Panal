@@ -1,21 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
-import Table, { TableColumn } from '../components/ui/Table';
-import { ViewAction } from '../components/ui/TableActions';
-import UserAvatar from '../components/ui/UserAvatar';
-import { useAppDispatch, useAppSelector } from '../hooks/redux';
-import { fetchAllUsers } from '../store/slices/usersSlices';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import Table, { TableColumn } from '../../components/ui/Table';
+import { ViewAction } from '../../components/ui/TableActions';
+import UserAvatar from '../../components/ui/UserAvatar';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { fetchAllUsers } from '../../store/slices/usersSlices';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import Pagination from '../components/ui/Pagination';
+import Pagination from '../../components/ui/Pagination';
 
 const Users: React.FC = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { users, loading, error, totalItems, totalPages } = useAppSelector(state => state.users);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentPageParam = searchParams.get("page");
 
   const [roleFilter, setRoleFilter] = useState(''); 
   const [searchTerm, setSearchTerm] = useState('');
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(currentPageParam ? parseInt(currentPageParam) : 1);
   const pageSize = 10; 
 
   useEffect(() => {
@@ -27,12 +31,25 @@ const Users: React.FC = () => {
     }));
   }, [dispatch, roleFilter, searchTerm, page, pageSize]);
 
+  // Update page when URL search params change
   useEffect(() => {
-    setPage(1);
+    const pageParam = searchParams.get("page");
+    if (pageParam) {
+      const pageNum = parseInt(pageParam);
+      if (pageNum !== page) {
+        setPage(pageNum);
+      }
+    } else if (page !== 1) {
+      setPage(1);
+    }
+  }, [searchParams, page]);
+
+  useEffect(() => {
+    setSearchParams({ page: "1" });
   }, [roleFilter, searchTerm]);
 
   const handleViewDetails = (userId: string) => {
-    console.log('View details:', userId);
+    navigate(`/users/${userId}`);
   };
 
   const handleExportExcel = () => {
@@ -60,6 +77,10 @@ const Users: React.FC = () => {
     // Save file
     const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
     saveAs(data, 'users.xlsx');
+  };
+
+  const handleAddUser = () => {
+    navigate('/users/add');
   };
 
   const columns: TableColumn<typeof users[0]>[] = [
@@ -147,7 +168,10 @@ const Users: React.FC = () => {
         {/* Action Buttons */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
+            <button 
+              className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+              onClick={handleAddUser}
+            >
               <Plus className="w-4 h-4" />
               إضافة مستخدم جديد
             </button>
@@ -211,7 +235,7 @@ const Users: React.FC = () => {
           <Pagination
             currentPage={page}
             totalPages={totalPages}
-            onPageChange={setPage}
+            onPageChange={(newPage) => setSearchParams({ page: newPage.toString() })}
           />
         </div>
       </div>

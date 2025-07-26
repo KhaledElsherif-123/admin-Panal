@@ -9,12 +9,10 @@ export interface City {
   lessPricePerKilometer: {
     max: number;
     min: number;
-    average: number;
   };
   lessStudentFee: {
     max: number;
     min: number;
-    average: number;
   };
   createdAt: string;
   updatedAt: string;
