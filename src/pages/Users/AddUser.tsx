@@ -264,6 +264,7 @@ const AddUser: React.FC = () => {
                 <label className="block text-sm font-medium mb-2">رقم الهاتف *</label>
                 <input
                   type="tel"
+                  autoComplete="off"
                   value={formData.phone}
                   onChange={(e) => handleInputChange('phone', e.target.value)}
                   className={`w-full bg-dark-400 border rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600 ${
@@ -278,6 +279,7 @@ const AddUser: React.FC = () => {
                 <label className="block text-sm font-medium mb-2">كلمة المرور *</label>
                 <input
                   type="password"
+                  autoComplete="new-password"
                   value={formData.password}
                   onChange={(e) => handleInputChange('password', e.target.value)}
                   className={`w-full bg-dark-400 border rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600 ${

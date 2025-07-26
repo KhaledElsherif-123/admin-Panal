@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import api from '../../api/axios';
 
 export interface Vehicle {
   id: string;
@@ -26,12 +26,7 @@ export const fetchVehicles = createAsyncThunk(
   'vehicles/fetchVehicles',
   async (_, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get('https://mahfouzapp.com/dashboard/vehicle', {
-        headers: {
-          'Authorization': token ? `Bearer ${token}` : '',
-        },
-      });
+      const response = await api.get('/dashboard/vehicle');
       return response.data.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message?.english || error.message || 'Failed to fetch vehicles');

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import axios from 'axios';
+import api from '../../api/axios';
 
 export interface City {
   id: string;
@@ -57,12 +57,7 @@ export const fetchCities = createAsyncThunk(
   'cities/fetchCities',
   async ({ page = 1, pageSize = 10 }: { page?: number; pageSize?: number } = {}, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`https://mahfouzapp.com/dashboard/cities?page=${page}&pageSize=${pageSize}`, {
-        headers: {
-          'Authorization': token ? `Bearer ${token}` : '',
-        },
-      });
+      const response = await api.get(`/dashboard/cities?page=${page}&pageSize=${pageSize}`);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message?.english || error.message || 'Failed to fetch cities');
@@ -74,12 +69,7 @@ export const fetchCityById = createAsyncThunk(
   'cities/fetchCityById',
   async (id: string, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`https://mahfouzapp.com/dashboard/cities/${id}`, {
-        headers: {
-          'Authorization': token ? `Bearer ${token}` : '',
-        },
-      });
+      const response = await api.get(`/dashboard/cities/${id}`);
       return response.data.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message?.english || error.message || 'Failed to fetch city');
@@ -91,13 +81,7 @@ export const createCity = createAsyncThunk(
   'cities/createCity',
   async (data: Omit<City, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.post('https://mahfouzapp.com/dashboard/cities', data, {
-        headers: {
-          'Authorization': token ? `Bearer ${token}` : '',
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await api.post('/dashboard/cities', data);
       return response.data.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message?.english || error.message || 'Failed to create city');
@@ -109,13 +93,7 @@ export const updateCity = createAsyncThunk(
   'cities/updateCity',
   async ({ id, data }: { id: string; data: Partial<City> }, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.patch(`https://mahfouzapp.com/dashboard/cities/${id}`, data, {
-        headers: {
-          'Authorization': token ? `Bearer ${token}` : '',
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await api.patch(`/dashboard/cities/${id}`, data);
       return response.data.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message?.english || error.message || 'Failed to update city');
@@ -127,12 +105,7 @@ export const deleteCity = createAsyncThunk(
   'cities/deleteCity',
   async (id: string, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.delete(`https://mahfouzapp.com/dashboard/cities/${id}`, {
-        headers: {
-          'Authorization': token ? `Bearer ${token}` : '',
-        },
-      });
+      await api.delete(`/dashboard/cities/${id}`);
       return id;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message?.english || error.message || 'Failed to delete city');
