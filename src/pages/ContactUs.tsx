@@ -54,7 +54,7 @@ const ContactUs: React.FC = () => {
   const columns: TableColumn<ContactUsItem>[] = [
     {
       key: 'name',
-      title: 'المستخدم',
+      title: t('table.userName'),
       width: '300px',
       render: (_, record) => (
         <div className="flex items-center gap-3">
@@ -84,7 +84,7 @@ const ContactUs: React.FC = () => {
     },
     {
       key: 'contactNumber',
-      title: 'معلومات التواصل',
+      title: t('table.contactNumber'),
       width: '150px',
       render: (value) => (
         <div className="space-y-1">
@@ -97,7 +97,7 @@ const ContactUs: React.FC = () => {
     },
     {
       key: 'reason',
-      title: 'السبب',
+      title: t('table.reason'),
       width: '150px',
       render: (value) => (
         <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-medium">
@@ -107,7 +107,7 @@ const ContactUs: React.FC = () => {
     },
     {
       key: 'message',
-      title: 'الرسالة',
+      title: t('table.message'),
       width: '300px',
       render: (value) => (
         <div className="max-w-xs">
@@ -119,7 +119,7 @@ const ContactUs: React.FC = () => {
     },
     {
       key: 'createdAt',
-      title: 'التاريخ',
+      title: t('table.date'),
       width: '150px',
       render: (value) => (
         <div>
@@ -135,7 +135,7 @@ const ContactUs: React.FC = () => {
     },
     {
       key: 'actions',
-      title: 'الإجراءات',
+      title: t('table.actions'),
       width: '100px',
       align: 'center',
       render: (_, record) => (
@@ -143,7 +143,7 @@ const ContactUs: React.FC = () => {
           onClick={() => handleDelete(record.id)}
           disabled={deleteLoading}
           className="p-2 text-red-500 hover:text-red-700 hover:bg-red-100 rounded-lg transition-colors disabled:opacity-50"
-          title="حذف التقرير"
+          title={t('common.delete')}
         >
           <Trash2 className="w-4 h-4" />
         </button>
@@ -174,7 +174,7 @@ const ContactUs: React.FC = () => {
         columns={columns}
         data={contacts}
         loading={loading}
-        emptyText="لا توجد تقارير تواصل"
+        emptyText={t('pagination.noData')}
         hoverable={true}
         striped={false}
       />

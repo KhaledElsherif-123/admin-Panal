@@ -32,10 +32,10 @@ const City: React.FC = () => {
           className="flex items-center gap-2 bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors"
         >
           <Plus className="w-4 h-4" />
-          إضافة مدينة
+          {t('cities.addCity')}
         </button>
       </div>
-      {loading && <p className="text-gray-400">جاري التحميل...</p>}
+      {loading && <p className="text-gray-400">{t('common.loading')}</p>}
       {error && <p className="text-red-500">{error}</p>}
       {!loading && !error && (
         <ul className="space-y-2">
