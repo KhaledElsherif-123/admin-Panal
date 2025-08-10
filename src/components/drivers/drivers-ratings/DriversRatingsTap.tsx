@@ -93,6 +93,8 @@ const DriversRatings: React.FC<DriversRatingsProps> = ({
       </div>
     </div>
   </div>
+}
+)
 );
 
 export default DriversRatings; 
