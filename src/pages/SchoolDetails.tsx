@@ -1,23 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchSchoolById, updateSchool, clearUpdateError } from '../../store/slices/schoolSlices';
-import { showToast } from '../../store/slices/toastSlice';
-import type { RootState, AppDispatch } from '../../store';
-import DeleteSchoolModal from '../../components/schools/DeleteSchoolModal';
+import { fetchSchoolById, updateSchool, clearUpdateError } from '../store/slices/schoolSlices';
+import type { RootState, AppDispatch } from '../store';
+import DeleteSchoolModal from '../components/schools/DeleteSchoolModal';
 import { ArrowLeft, Edit, Save, X, Trash2 } from 'lucide-react';
 
 const SchoolDetails: React.FC = () => {
-  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { selectedSchool, selectedSchoolLoading, selectedSchoolError, updateLoading, updateError } = useSelector(
     (state: RootState) => state.school
   );
-  const countries = useSelector((state: RootState) => state.countries.countries);
-  const cities = useSelector((state: RootState) => state.city.cities);
 
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -60,11 +55,8 @@ const SchoolDetails: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (id) {
-      const result = await dispatch(updateSchool({ id, data: formData }));
-      if (updateSchool.fulfilled.match(result)) {
-        dispatch(showToast({ message: 'تم تحديث بيانات المدرسة بنجاح', type: 'success' }));
-        setIsEditing(false);
-      }
+      await dispatch(updateSchool({ id, data: formData }));
+      setIsEditing(false);
     }
   };
 
@@ -122,9 +114,6 @@ const SchoolDetails: React.FC = () => {
       </div>
     </div>
   );
-
-  const city = cities.find(c => c.id === selectedSchool?.cityId);
-  const country = countries.find(c => c.id === selectedSchool?.countryId);
 
   return (
     <div className="p-6">
@@ -334,12 +323,16 @@ const SchoolDetails: React.FC = () => {
             <h3 className="text-lg font-semibold mb-4 text-white">معلومات إضافية</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="border-b border-dark-200 pb-3">
-                <span className="text-sm text-gray-400 block mb-1">المدينة:</span>
-                <p className="font-medium text-gray-300 text-sm">{city ? city.name : selectedSchool.cityId}</p>
+                <span className="text-sm text-gray-400 block mb-1">معرف المدينة:</span>
+                <p className="font-medium text-gray-300 text-sm">{selectedSchool.cityId}</p>
               </div>
               <div className="border-b border-dark-200 pb-3">
-                <span className="text-sm text-gray-400 block mb-1">الدولة:</span>
-                <p className="font-medium text-gray-300 text-sm">{country ? country.name : selectedSchool.countryId}</p>
+                <span className="text-sm text-gray-400 block mb-1">معرف الدولة:</span>
+                <p className="font-medium text-gray-300 text-sm">{selectedSchool.countryId}</p>
+              </div>
+              <div className="border-b border-dark-200 pb-3">
+                <span className="text-sm text-gray-400 block mb-1">تاريخ الإنشاء:</span>
+                <p className="font-medium text-gray-300 text-sm">{new Date(selectedSchool.createdAt).toLocaleDateString('ar-SA')}</p>
               </div>
             </div>
           </div>

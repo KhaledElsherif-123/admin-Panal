@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCities} from '../../store/slices/citySlice';
-import type { RootState, AppDispatch } from '../../store';
-import type { City as CityType } from '../../store/slices/citySlice';
+import { fetchCities, createCity, deleteCity } from '../store/slices/citySlice';
+import type { RootState, AppDispatch } from '../store';
+import type { City as CityType } from '../store/slices/citySlice';
 import { Eye, Plus, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import AddCityModal from '../../components/cities/AddCityModal';
-import DeleteCityModal from '../../components/cities/DeleteCityModal';
+import AddCityModal from '../components/cities/AddCityModal';
+import DeleteCityModal from '../components/cities/DeleteCityModal';
 
 const City: React.FC = () => {
-  const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
-  const { cities, loading, error } = useSelector((state: RootState) => state.city);
+  const { cities, loading, error, createLoading, createError, deleteLoading, deleteError } = useSelector((state: RootState) => state.city);
   const navigate = useNavigate();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -22,11 +20,15 @@ const City: React.FC = () => {
     dispatch(fetchCities({ page: 1, pageSize: 10 }));
   }, [dispatch]);
 
+  const handleDelete = async (id: string) => {
+    await dispatch(deleteCity(id));
+    navigate('/city');
+  };
 
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-white">{t('pages.cityPage')}</h1>
+        <h1 className="text-2xl font-bold text-white">صفحة المدينة</h1>
         <button
           onClick={() => setIsAddModalOpen(true)}
           className="flex items-center gap-2 bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors"

@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useTranslation } from 'react-i18next';
-import { fetchTripGroups } from '../../store/slices/groupsSlice';
-import type { RootState, AppDispatch } from '../../store';
-import Table, { TableColumn } from '../../components/ui/Table';
-import Pagination from '../../components/ui/Pagination';
+import { fetchTripGroups } from '../store/slices/groupsSlice';
+import type { RootState, AppDispatch } from '../store';
+import Table, { TableColumn } from '../components/ui/Table';
+import Pagination from '../components/ui/Pagination';
 import { Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Groups: React.FC = () => {
-  const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const { tripGroups, loading, error, totalPages } = useSelector((state: RootState) => state.tripGroups);
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,15 +22,12 @@ const Groups: React.FC = () => {
   const [isCompleted, setIsCompleted] = useState('');
   const [gender, setGender] = useState('');
 
-  // Get unique groupType values from tripGroups
-  const groupTypeOptions = Array.from(new Set(tripGroups.map(g => g.groupType))).filter(Boolean);
-
   const columns: TableColumn[] = [
     { key: 'name', title: 'الاسم' },
-    { key: 'inComing', title: 'وقت العودة' },
-    { key: 'onGoing', title: 'وقت الذهاب' },
     { key: 'groupType', title: 'نوع المجموعة' },
     { key: 'NextTripType', title: 'نوع الرحلة التالية' },
+    { key: 'inComing', title: 'وقت العودة' },
+    { key: 'onGoing', title: 'وقت الذهاب' },
     { key: 'gender', title: 'الجنس' },
     { key: 'academicLevel', title: 'المرحلة الدراسية' },
     { key: 'isCompleted', title: 'مكتملة؟', render: (value) => value ? 'نعم' : 'لا' },
@@ -80,24 +75,19 @@ const Groups: React.FC = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">{t('pages.groupsManagement')}</h1>
+      <h1 className="text-2xl font-bold mb-4">ادارة المجموعات</h1>
       <div className="mb-4 flex flex-wrap gap-4 items-end">
         <div>
           <label className="block text-sm mb-1 text-gray-300">اسم السائق</label>
           <input type="text" value={driverName} onChange={e => setDriverName(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[160px]" placeholder="اسم السائق" />
         </div>
         <div>
-          <label className="block text-sm mb-1 text-gray-300">اسم المجموعة</label>
-          <input type="text" value={name} onChange={e => setName(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[160px]" placeholder="اسم المجموعة" />
+          <label className="block text-sm mb-1 text-gray-300">نوع المجموعة</label>
+          <input type="text" value={groupType} onChange={e => setGroupType(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[160px]" placeholder="نوع المجموعة" />
         </div>
         <div>
-          <label className="block text-sm mb-1 text-gray-300">نوع المجموعة</label>
-          <select value={groupType} onChange={e => setGroupType(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[160px]">
-            <option value="">الكل</option>
-            {groupTypeOptions.map(type => (
-              <option key={type} value={type}>{type}</option>
-            ))}
-          </select>
+          <label className="block text-sm mb-1 text-gray-300">اسم المجموعة</label>
+          <input type="text" value={name} onChange={e => setName(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[160px]" placeholder="اسم المجموعة" />
         </div>
         <div>
           <label className="block text-sm mb-1 text-gray-300">مكتملة؟</label>
@@ -109,11 +99,7 @@ const Groups: React.FC = () => {
         </div>
         <div>
           <label className="block text-sm mb-1 text-gray-300">الجنس</label>
-          <select value={gender} onChange={e => setGender(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[120px]">
-            <option value="">الكل</option>
-            <option value="MALE">ذكر</option>
-            <option value="FEMALE">أنثى</option>
-          </select>
+          <input type="text" value={gender} onChange={e => setGender(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[120px]" placeholder="الجنس" />
         </div>
         <button
           type="button"

@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCityById, updateCity } from '../../store/slices/citySlice';
-import type { RootState, AppDispatch } from '../../store';
+import { fetchCityById, updateCity, deleteCity } from '../store/slices/citySlice';
+import type { RootState, AppDispatch } from '../store';
 import { ArrowLeft } from 'lucide-react';
-import DeleteCityModal from '../../components/cities/DeleteCityModal';
-import { showToast } from '../../store/slices/toastSlice';
+import DeleteCityModal from '../components/cities/DeleteCityModal';
+import { countries } from '../components/cities/AddCityModal';
 
 const CityDetails: React.FC = () => {
-  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { selectedCity, selectedCityLoading, selectedCityError} = useSelector((state: RootState) => state.city);
-  const { countries } = useSelector((state: RootState) => state.countries);
+  const { selectedCity, selectedCityLoading, selectedCityError, deleteLoading, deleteError } = useSelector((state: RootState) => state.city);
 
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({ ...selectedCity });
@@ -31,7 +28,7 @@ const CityDetails: React.FC = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (name.startsWith('lessPricePerKilometer.') || name.startsWith('lessStudentFee.')) {
-      const [key, sub] = name.split('.') as ['lessPricePerKilometer' | 'lessStudentFee', 'min' | 'max'];
+      const [key, sub] = name.split('.') as ['lessPricePerKilometer' | 'lessStudentFee', 'min' | 'max' | 'average'];
       setFormData((prev) => ({
         ...prev,
         [key]: { ...prev[key], [sub]: Number(value) }
@@ -45,20 +42,20 @@ const CityDetails: React.FC = () => {
     e.preventDefault();
     if (id) {
       const payload = {
+        ...formData,
         lessPricePerKilometer: {
           min: formData.lessPricePerKilometer?.min ?? 0,
           max: formData.lessPricePerKilometer?.max ?? 0,
+          average: formData.lessPricePerKilometer?.average ?? 0,
         },
         lessStudentFee: {
           min: formData.lessStudentFee?.min ?? 0,
           max: formData.lessStudentFee?.max ?? 0,
+          average: formData.lessStudentFee?.average ?? 0,
         },
       };
-      const result = await dispatch(updateCity({ id, data: payload }));
-      if (updateCity.fulfilled.match(result)) {
-        dispatch(showToast({ message: 'تم تحديث بيانات المدينة بنجاح', type: 'success' }));
-        setIsEditing(false);
-      }
+      await dispatch(updateCity({ id, data: payload }));
+      setIsEditing(false);
     }
   };
 
@@ -86,18 +83,23 @@ const CityDetails: React.FC = () => {
           <div className="bg-dark-400 rounded-lg px-4 py-2 text-sm text-gray-300">
             <span className="font-semibold text-primary-400">الدولة:</span> {countries.find((c: {id: string; name: string}) => c.id === selectedCity.countryId)?.name || selectedCity.countryId}
           </div>
+          <div className="bg-dark-400 rounded-lg px-4 py-2 text-sm text-gray-300">
+            <span className="font-semibold text-primary-400">تاريخ الإنشاء:</span> {new Date(selectedCity.createdAt).toLocaleDateString('ar-SA')}
+          </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div className="bg-dark-400 rounded-lg p-4">
             <div className="text-gray-400 mb-1 font-semibold">سعر/كم</div>
             <div className="text-white text-lg font-bold">
               {selectedCity.lessPricePerKilometer?.min} - {selectedCity.lessPricePerKilometer?.max}
+              <span className="text-xs text-gray-400 font-normal ml-2">(متوسط: {selectedCity.lessPricePerKilometer?.average})</span>
             </div>
           </div>
           <div className="bg-dark-400 rounded-lg p-4">
             <div className="text-gray-400 mb-1 font-semibold">رسوم طالب</div>
             <div className="text-white text-lg font-bold">
               {selectedCity.lessStudentFee?.min} - {selectedCity.lessStudentFee?.max}
+              <span className="text-xs text-gray-400 font-normal ml-2">(متوسط: {selectedCity.lessStudentFee?.average})</span>
             </div>
           </div>
         </div>

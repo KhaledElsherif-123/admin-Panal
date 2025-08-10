@@ -1,59 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import Table, { TableColumn } from '../../components/ui/Table';
-import { ViewAction } from '../../components/ui/TableActions';
-import UserAvatar from '../../components/ui/UserAvatar';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { fetchAllUsers } from '../../store/slices/usersSlices';
+import Table, { TableColumn } from '../components/ui/Table';
+import { ViewAction } from '../components/ui/TableActions';
+import UserAvatar from '../components/ui/UserAvatar';
+import { useAppDispatch, useAppSelector } from '../hooks/redux';
+import { fetchAllUsers } from '../store/slices/usersSlices';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import Pagination from '../../components/ui/Pagination';
+import Pagination from '../components/ui/Pagination';
 
 const Users: React.FC = () => {
-  const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const { users, loading, error, totalItems, totalPages } = useAppSelector(state => state.users);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const currentPageParam = searchParams.get("page");
-  const currentPage = currentPageParam ? parseInt(currentPageParam) : 1;
 
   const [roleFilter, setRoleFilter] = useState(''); 
   const [searchTerm, setSearchTerm] = useState('');
-  const [page, setPage] = useState(currentPage);
+  const [page, setPage] = useState(1);
   const pageSize = 10; 
 
   useEffect(() => {
     dispatch(fetchAllUsers({
       role: roleFilter || undefined,
       userName: searchTerm || undefined,
-      page: currentPage,
+      page,
       pageSize,
     }));
-  }, [dispatch, roleFilter, searchTerm, currentPage, pageSize]);
+  }, [dispatch, roleFilter, searchTerm, page, pageSize]);
 
-  // Update page when URL search params change
   useEffect(() => {
-    const pageParam = searchParams.get("page");
-    if (pageParam) {
-      const pageNum = parseInt(pageParam);
-      if (pageNum !== page) {
-        setPage(pageNum);
-      }
-    } else if (page !== 1) {
-      setPage(1);
-    }
-  }, [searchParams, page]);
-
-  // Remove this effect:
-  // useEffect(() => {
-  //   setSearchParams({ page: "1" });
-  // }, [roleFilter, searchTerm]);
+    setPage(1);
+  }, [roleFilter, searchTerm]);
 
   const handleViewDetails = (userId: string) => {
-    navigate(`/users/${userId}`);
+    console.log('View details:', userId);
   };
 
   const handleExportExcel = () => {
@@ -83,29 +62,10 @@ const Users: React.FC = () => {
     saveAs(data, 'users.xlsx');
   };
 
-  const handleAddUser = () => {
-    navigate('/users/add');
-  };
-
-  // Reset page to 1 when filter changes
-  const handleRoleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setRoleFilter(e.target.value);
-    setSearchParams({ page: "1" });
-  };
-
-  const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-    setSearchParams({ page: "1" });
-  };
-
-  const handlePageChange = (page: number) => {
-    setSearchParams({ page: page.toString() });
-  };
-
   const columns: TableColumn<typeof users[0]>[] = [
     {
       key: 'userName',
-      title: t('users.userName'),
+      title: 'اسم المستخدم',
       sortable: true,
       render: (_, record) => (
         <UserAvatar name={record.userName} email={record.userName} size="md" />
@@ -113,7 +73,7 @@ const Users: React.FC = () => {
     },
     {
       key: 'phone',
-      title: t('users.phoneNumber'),
+      title: 'رقم الهاتف',
       sortable: true,
       render: (value) => (
         <span className="font-mono text-sm">{value}</span>
@@ -121,7 +81,7 @@ const Users: React.FC = () => {
     },
     {
       key: 'role',
-      title: t('users.role'),
+      title: 'الدور',
       sortable: true,
       render: (value) => (
         <span className="text-gray-300">{value}</span>
@@ -129,32 +89,32 @@ const Users: React.FC = () => {
     },
     {
       key: 'city',
-      title: t('users.city'),
+      title: 'المدينة',
       render: (value) => <span className="text-gray-300">{value?.name || '-'}</span>
     },
     {
       key: 'country',
-      title: t('users.country'),
+      title: 'الدولة',
       render: (value) => <span className="text-gray-300">{value?.name || '-'}</span>
     },
     {
       key: 'region',
-      title: t('users.region'),
+      title: 'المنطقة',
       render: (value) => <span className="text-gray-300">{value || '-'}</span>
     },
     {
       key: 'dateOfBirth',
-      title: t('users.dateOfBirth'),
+      title: 'تاريخ الميلاد',
       render: (value) => <span className="text-gray-400 text-sm">{value ? new Date(value).toLocaleDateString('ar-EG') : '-'}</span>
     },
     {
       key: 'gender',
-      title: t('users.gender'),
-      render: (value) => <span className="text-gray-300">{value === 'MALE' ? t('users.male') : value === 'FEMALE' ? t('users.female') : '-'}</span>
+      title: 'الجنس',
+      render: (value) => <span className="text-gray-300">{value === 'MALE' ? 'ذكر' : value === 'FEMALE' ? 'أنثى' : '-'}</span>
     },
     {
       key: 'actions',
-      title: t('users.actions'),
+      title: 'الإجراءات',
       render: (_, record) => (
         <div className="flex items-center gap-2">
           <ViewAction onClick={() => handleViewDetails(record.id)} />
@@ -171,14 +131,14 @@ const Users: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">{t('users.title')}</h1>
+          <h1 className="text-2xl font-bold">إدارة المستخدمين</h1>
         </div>
         <div className="flex items-center gap-3">
           <span className="text-gray-400 text-sm">
-            {t('users.usersList')}
+            قائمة المستخدمين
           </span>
           <span className="bg-primary-600 text-white px-3 py-1 rounded-full text-sm">
-            {t('users.totalUsers')}: {totalItems}
+            إجمالي المستخدمين: {totalItems}
           </span>
         </div>
       </div>
@@ -187,18 +147,15 @@ const Users: React.FC = () => {
         {/* Action Buttons */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button 
-              className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-              onClick={handleAddUser}
-            >
+            <button className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
               <Plus className="w-4 h-4" />
-              {t('users.addNew')}
+              إضافة مستخدم جديد
             </button>
             <button
               className="bg-success-600 hover:bg-success-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
               onClick={handleExportExcel}
             >
-              {t('users.exportExcel')}
+              تصدير إلى Excel
             </button>
           </div>
         </div>
@@ -208,22 +165,22 @@ const Users: React.FC = () => {
           <div>
             <input
               type="text"
-              placeholder={t('users.searchByName')}
+              placeholder="البحث بالاسم..."
               className="w-full bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
               value={searchTerm}
-              onChange={handleSearchTermChange}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
           <div>
             <select
               className="w-full bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
               value={roleFilter}
-              onChange={handleRoleFilterChange}
+              onChange={e => setRoleFilter(e.target.value)}
             >
-              <option value="">{t('users.filterByRole')}</option>
-              <option value="STUDENT">{t('users.student')}</option>
-              <option value="PARENT">{t('users.parent')}</option>
-              <option value="DRIVER">{t('users.driver')}</option>
+              <option value="">فلترة حسب الدور</option>
+              <option value="STUDENT">طالب</option>
+              <option value="PARENT">ولي أمر</option>
+              <option value="DRIVER">سائق</option>
             </select>
           </div>
           <button
@@ -231,10 +188,9 @@ const Users: React.FC = () => {
             onClick={() => {
               setSearchTerm('');
               setRoleFilter('');
-              setSearchParams({ page: "1" });
             }}
           >
-            {t('users.resetFilters')}
+            إعادة تعيين الفلاتر
           </button>
         </div>
 
@@ -250,12 +206,12 @@ const Users: React.FC = () => {
         {/* Results Summary */}
         <div className="flex items-center justify-between pt-4 border-t border-dark-200">
           <div className="text-sm text-gray-400">
-            {t('users.showing')} {users.length} {t('users.of')} {totalItems} {t('users.user')}
+            عرض {users.length} من أصل {totalItems} مستخدم
           </div>
           <Pagination
-            currentPage={currentPage}
+            currentPage={page}
             totalPages={totalPages}
-            onPageChange={handlePageChange}
+            onPageChange={setPage}
           />
         </div>
       </div>
