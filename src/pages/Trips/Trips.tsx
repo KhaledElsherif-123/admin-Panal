@@ -119,15 +119,14 @@ const Trips: React.FC = () => {
             className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[120px]"
           >
             <option value="">{t('trips.filters.all')}</option>
-            <option value="Begin">{t('trips.filters.Begin')}</option>
-            {statusOptions.map(option => (
+            {['BEGIN', ...statusOptions].map(option => (
               <option key={option} value={option}>
-                {option.charAt(0).toUpperCase() + option.slice(1).toLowerCase()}
+                {t(`trips.filters.${option}`)}
               </option>
             ))}
-
           </select>
         </div>
+
 
         <div>
           <label className="block text-sm mb-1 text-gray-300">{t('table.date')}</label>

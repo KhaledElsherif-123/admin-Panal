@@ -821,7 +821,8 @@
     "statusLog": "Status Log",
     "noStudents": "No students","filters": {
   "all": "All",
-  "Begin": "Begin"
+  "BEGIN": "Begin",
+  "FINISHED": "Finished"
 }
 
   },
