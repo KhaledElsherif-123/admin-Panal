@@ -7,6 +7,7 @@ import Table, { TableColumn } from '../../components/ui/Table';
 import Pagination from '../../components/ui/Pagination';
 import { Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import useDebounce from '../../hooks/useDebounce';   // ✅ import debounce hook
 
 const Groups: React.FC = () => {
   const { t } = useTranslation();
@@ -24,7 +25,11 @@ const Groups: React.FC = () => {
   const [isCompleted, setIsCompleted] = useState('');
   const [gender, setGender] = useState('');
 
-  // ✅ Static groupType options (to always display full list)
+  // ✅ Debounced values
+  const debouncedDriverName = useDebounce(driverName, 600);
+  const debouncedGroupName = useDebounce(name, 600);
+
+  // Static groupType options (to always display full list)
   const groupTypeOptions = ['PUBLIC_STUDENT', 'PRIVATE_STUDENT'];
 
   const groupTypeLabels: Record<string, string> = {
@@ -66,17 +71,18 @@ const Groups: React.FC = () => {
     },
   ];
 
+  // ✅ Fetch groups with debounced filters
   useEffect(() => {
     dispatch(fetchTripGroups({
       page: currentPage,
       pageSize: PAGE_SIZE,
-      driverName: driverName || undefined,
+      driverName: debouncedDriverName || undefined,
       groupType: groupType || undefined,
-      name: name || undefined,
+      name: debouncedGroupName || undefined,
       isCompleted: isCompleted !== '' ? isCompleted : undefined,
       gender: gender || undefined,
     }));
-  }, [dispatch, currentPage, driverName, groupType, name, isCompleted, gender]);
+  }, [dispatch, currentPage, debouncedDriverName, groupType, debouncedGroupName, isCompleted, gender]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -85,7 +91,7 @@ const Groups: React.FC = () => {
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [driverName, groupType, name, isCompleted, gender]);
+  }, [debouncedDriverName, groupType, debouncedGroupName, isCompleted, gender]);
 
   return (
     <div className="p-6">
