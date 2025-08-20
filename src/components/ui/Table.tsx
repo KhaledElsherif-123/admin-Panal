@@ -79,21 +79,19 @@ const Table = <T extends Record<string, any>>({
   };
 
   const getTextAlign = (align?: string) => {
-    // If no specific alignment is provided, use default based on language direction
-    if (!align) {
-      return isRTL ? 'text-right' : 'text-left';
-    }
-    
-    switch (align) {
-      case 'left':
-        return isRTL ? 'text-left' : 'text-left';
-      case 'center':
-        return 'text-center';
-      case 'right':
-        return isRTL ? 'text-right' : 'text-right';
-      default:
-        return isRTL ? 'text-right' : 'text-left';
-    }
+    if (align === 'center') return 'text-center';
+    if (align === 'left') return 'text-left';
+    if (align === 'right') return 'text-right';
+    // Default alignment based on language direction
+    return isRTL ? 'text-right' : 'text-left';
+  };
+
+  const getHeaderAlign = (align?: string) => {
+    if (align === 'center') return 'justify-center';
+    if (align === 'left') return isRTL ? 'justify-end' : 'justify-start';
+    if (align === 'right') return isRTL ? 'justify-start' : 'justify-end';
+    // Default alignment for headers based on language direction
+    return isRTL ? 'justify-end' : 'justify-start';
   };
 
   if (loading) {
@@ -120,17 +118,12 @@ const Table = <T extends Record<string, any>>({
               {columns.map((column, index) => (
                 <th
                   key={index}
-                  className={`py-4 px-4 font-medium text-gray-300 ${getTextAlign(column.align)} ${
+                  className={`py-4 px-4 font-medium text-gray-300 ${
                     isRTL ? 'first:rounded-r-lg last:rounded-l-lg' : 'first:rounded-l-lg last:rounded-r-lg'
                   }`}
                   style={{ width: column.width }}
                 > 
-                  <div className={`flex items-center gap-2 ${
-                    column.align === 'center' ? 'justify-center' : 
-                    column.align === 'left' ? (isRTL ? 'justify-end' : 'justify-start') :
-                    column.align === 'right' ? (isRTL ? 'justify-start' : 'justify-end') :
-                    isRTL ? 'justify-end' : 'justify-start'
-                  }`}>
+                  <div className={`flex items-center gap-2 ${getHeaderAlign(column.align)}`}>
                     {column.title}
                     {column.sortable && (
                       <button className="text-gray-400 hover:text-white transition-colors">
